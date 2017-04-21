@@ -1,40 +1,33 @@
 $(function() {
-    console.log("start");
     var app = new PIXI.Application();
     document.body.appendChild(app.view);
 
     var count = 0;
-
+    var duan = 16;
     // build a rope!
-    var ropeLength = 918 / 20;
+    var ropeLength = 918 / duan;
+
 
     var points = [];
 
-    for (var i = 0; i < 20; i++) {
-        var point = new PIXI.Point(i * ropeLength, 0);
-        points.push(point);
-        // app.stage.addChild(point);
+    for (var i = 0; i < duan; i++) {
+        points.push(new PIXI.Point(i * ropeLength, 0));
     }
 
     var strip = new PIXI.mesh.Rope(PIXI.Texture.fromImage('./snake.png'), points);
 
-    strip.x = -459;
+    strip.x = -40;
+    strip.y = 300;
 
-    var snakeContainer = new PIXI.Container();
-    snakeContainer.x = 400;
-    snakeContainer.y = 300;
+    app.stage.addChild(strip);
 
-    snakeContainer.scale.set(800 / 1100);
-    app.stage.addChild(snakeContainer);
+    var g = new PIXI.Graphics();
+    g.x = strip.x;
+    g.y = strip.y;
+    app.stage.addChild(g);
 
-    snakeContainer.addChild(strip);
-    for (var i = 0; i < points.length; i++) {
-        var graphic = new PIXI.Graphics();
-        graphic.beginFill(0xffffff, 1);
-        graphic.drawCircle(points[i].x, points[i].y, 2);
-        graphic.endFill();
-        app.stage.addChild(graphic);
-    }
+    // start animating
+
 
     app.ticker.add(function() {
 
@@ -45,5 +38,25 @@ $(function() {
             points[i].y = Math.sin((i * 0.5) + count) * 30;
             points[i].x = i * ropeLength + Math.cos((i * 0.3) + count) * 20;
         }
+        renderPoints();
     });
+
+    function renderPoints() {
+
+        g.clear();
+
+        g.lineStyle(2, 0xffc2c2);
+        g.moveTo(points[0].x, points[0].y);
+
+        for (var i = 1; i < points.length; i++) {
+            g.lineTo(points[i].x, points[i].y);
+        }
+
+        for (var i = 1; i < points.length; i++) {
+            g.beginFill(0xff0022);
+            g.drawCircle(points[i].x, points[i].y, 10);
+            g.endFill();
+        }
+    }
+
 })
